@@ -7,7 +7,7 @@ import { Api } from './api/api'
 
 function App() {
 
-  const [devmons, setItems] = useState([])
+  const [items, setItems] = useState([])
 
   async function fetchData() {
     try {
@@ -40,7 +40,7 @@ function App() {
         {items.map(function (item) {
           return (
             <li key={item._id}>
-              {item.nome}
+              {item.nome} | | 
               <button onClick={function () { deleteItem(item._id); }}>Deletar</button>
             </li>
           );
