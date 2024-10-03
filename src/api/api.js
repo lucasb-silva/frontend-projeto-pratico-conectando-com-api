@@ -5,17 +5,25 @@ export const Api = {
     endpoint: function () {
       return Api.baseUrl + 'personagem'
     },
-    readAll: function () {
-      return this.endpoint() + '/'
+    readAll: async function () {
+      try {
+        const response = await fetch(this.endpoint(), { method: 'GET'});
+        return await response.json();
+      } catch (error) {
+        console.error('Erro ao carregar dados: ' + this.endpoint(), error);
+        throw error;
+      }
+    },
+    delete: async function(id) {
+      try {
+        const response = await fetch(this.endpoint() + '/' + id, { method: 'DELETE'});
+        if (!response.ok){
+          throw new Error('Erro ao deletar item');
+        }
+      } catch (error) {
+        console.error('Erro ao deletar dados: ' + this.endpoint() + '/' + id, error);
+        throw error;
+      }
     }
-  },
-  
-  buildApiGetRequest: function (url) {
-    return fetch(url, { method: 'GET' }).catch(function (error) {
-      console.error('Erro ao carssregar dados ' + url, error)
-      toast.error('Erro ao carregar dados')
-    })
   }
-
-
 }

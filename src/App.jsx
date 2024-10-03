@@ -7,38 +7,48 @@ import { Api } from './api/api'
 
 function App() {
 
-  const [devmons, setDevmons] = useState([])
+  const [devmons, setItems] = useState([])
 
   async function fetchData() {
-    const apiURL = Api.personagem.readAll()
-
-    const response = await Api.buildApiGetRequest(apiURL)
-
-    if (response.ok) {
-      const data = await response.json()
-
-      setDevmons(data)
-    } else {
-      toast.error('Erro ao carregar lista de Devmon')
+    try {
+      const data = await Api.personagem.readAll();
+      setItems(data);
+    } catch (error) {
+      toast.error('Erro ao buscar dados');
+      console.error('Erro ao buscar dados', error);
     }
-
   }
 
   useEffect(function () {
     fetchData()
-  }, [])
+  }, []);
+
+  const deleteItem = async function (id) {
+    try {
+      await Api.personagem.delete(id);
+      setItems(items.filter(item => item._id !== id));
+    } catch (error) {
+      toast.error('Erro ao deletar item');
+      console.error('Erro ao deletar item: ', error);
+    }
+  };
 
   return (
-    <>
-      Lista de Cards com Map: <br />
-      <div className="cards">
-        {devmons.map(function (devmon) {
-          return <Card key={devmon.nome} item={devmon} />
+    <div>
+      <h1>Lista de Itens</h1>
+      <ul>
+        {items.map(function (item) {
+          return (
+            <li key={item._id}>
+              {item.nome}
+              <button onClick={function () { deleteItem(item._id); }}>Deletar</button>
+            </li>
+          );
         })}
-      </div >
+      </ul>
       <ToastContainer />
-    </>
-  )
+    </div>
+  );
 }
 
 export default App
